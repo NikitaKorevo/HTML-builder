@@ -59,7 +59,7 @@ const editHTML = async () => {
       const nameForHTML = component.slice(2, -2).trim() + '.html';
       template = template.replace(component, await readFile(path.join(__dirname, 'components', nameForHTML)));
     }
-    await writeFile(path.join(__dirname, 'project-dist', 'template.html'), template);
+    await writeFile(path.join(__dirname, 'project-dist', 'index.html'), template);
   } catch (err) {
     throw new err;
   }
