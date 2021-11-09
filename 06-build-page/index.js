@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { readdir, mkdir, appendFile, rm, stat, copyFile, readFile, writeFile } = fs.promises;
+const { readdir, mkdir, appendFile, rm, stat, copyFile, readFile, writeFile} = fs.promises;
 
 const deleteProjectDist = async () => {
   await rm(path.join(__dirname, 'project-dist'), {recursive: true, force: true});
@@ -22,7 +22,7 @@ const mergeStyles = async () => {
       }
     });
   } catch (err) {
-    throw new err;
+    console.log(err);
   }
 };
 
@@ -46,7 +46,7 @@ const mergeAssets = async () => {
     };
     searchFile(src, dest);
   } catch (err) {
-    throw new err;
+    console.log(err);
   }
 };
 
@@ -54,13 +54,15 @@ const editHTML = async () => {
   try {
     let template = await readFile(path.join(__dirname, 'template.html'), {encoding: 'utf-8'});
     const arrComponents = template.match(/\{\{(.*?)\}\}/g);
+    const arrFiles = await readdir(path.join(__dirname, 'components'));
 
     for await (const  component of arrComponents) {
       const nameForHTML = component.slice(2, -2).trim() + '.html';
+      if (!arrFiles.includes(nameForHTML)) continue;
       template = template.replace(component, await readFile(path.join(__dirname, 'components', nameForHTML)));
     }
     await writeFile(path.join(__dirname, 'project-dist', 'index.html'), template);
   } catch (err) {
-    throw new err;
+    console.log(err);
   }
 };
